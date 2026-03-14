@@ -12,7 +12,7 @@ def get_name():
         for champ in data_names["data"]:
                 all_champs.append(data_names["data"][champ]["name"])
 
-        print("Champion: ", all_champs[random.randrange(0,len(all_champs))])
+        print("Champion:", all_champs[random.randrange(0,len(all_champs))])
 
 def get_items():
         all_items = []
@@ -25,8 +25,11 @@ def get_items():
                 if data_items["data"][item]["gold"]["purchasable"] and data_items["data"][item]["maps"]["11"] and "into" not in data_items["data"][item] and "from" in data_items["data"][item]:
                         all_items.append(data_items["data"][item]["name"])
 
-        for x in range(1, 6):
-                print(f"{x} item: ", all_items[random.randrange(0,len(all_items))])
+        rand_item = random.sample(all_items, 5)
+
+        for x in range(0, 5):
+                suffix = "st" if x == 1 else "nd"
+                print(f"{x+1}{suffix} item: {rand_item[x]}")
 
 
 def get_spells():
@@ -47,9 +50,38 @@ def get_spells():
                 suffix = "st" if x == 1 else "nd"
                 print(f"{x+1}{suffix} spell: {rand_spell[x]}")
                 
+def get_roles():
+        # No API for this
+        all_roles = ["Top", "Jungle", "Mid", "Adc", "Support"]
 
-get_name()
-print("\n")
-get_spells()
-print("\n")
-get_items()
+        rand_role = random.choice(all_roles)
+
+        print(f"Role: {rand_role}")
+
+def get_runes():
+        get_runes = requests.get("https://ddragon.leagueoflegends.com/cdn/16.5.1/data/en_US/runesReforged.json")
+
+        data_runes = get_runes.json()
+
+        rune_head = random.randrange(0,4)
+
+        # Used this to understand how to pick things from the list 
+        # for x in range(len(data_runes)):
+        #         print(data_runes[x]["name"])
+        #         for y in range(len(data_runes[x]["slots"])):
+        #                 for z in range(len(data_runes[x]["slots"][y]["runes"])):
+        #                         print(data_runes[x]["slots"][y]["runes"][z]["name"])
+                                
+
+        print(data_runes[rune_head]["name"])
+        for i in range(0, 4):
+                print(data_runes[rune_head]["slots"][i]["runes"][random.randrange(0,3)]["name"])
+
+# get_name()
+# print()
+# get_roles()
+# print()
+# get_spells()
+# print()
+# get_items()
+get_runes()
