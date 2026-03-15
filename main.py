@@ -32,15 +32,24 @@ def get_name():
 def get_items():
         all_items = []
 
+        all_boots = []
+
         get_items = requests.get("https://ddragon.leagueoflegends.com/cdn/16.5.1/data/en_US/item.json")
 
         data_items = get_items.json()
 
+
         for item in data_items["data"]:
                 if data_items["data"][item]["gold"]["purchasable"] and data_items["data"][item]["maps"]["11"] and "into" not in data_items["data"][item] and "from" in data_items["data"][item]:
                         all_items.append(data_items["data"][item]["name"])
+                if data_items["data"][item]["gold"]["purchasable"] and data_items["data"][item]["maps"]["11"] and "from" in data_items["data"][item]:
+                        for boot in data_items["data"][item]["from"]:
+                                if boot == "1001":
+                                        all_boots.append(data_items["data"][item]["name"])
 
         rand_item = random.sample(all_items, 5)
+
+        print(f"Boots: {random.choice(all_boots)}")
 
         for x in range(0, 5):
                 suffix = "st" if x == 1 else "nd"
