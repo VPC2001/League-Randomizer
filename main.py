@@ -1,6 +1,6 @@
 import requests
 import random
-
+import json
 
 def get_name():
         all_champs = []
@@ -12,21 +12,21 @@ def get_name():
         for champ in data_names["data"]:
                 all_champs.append(data_names["data"][champ]["name"])
 
-        champ_name = all_champs[random.randrange(0,len(all_champs))]
+        rand_name = random.choice(all_champs)
 
-        url_champs_stats = requests.get(f"https://ddragon.leagueoflegends.com/cdn/16.5.1/data/en_US/champion/{champ_name}.json")
+        url_champs_stats = requests.get(f"https://ddragon.leagueoflegends.com/cdn/16.5.1/data/en_US/champion/{rand_name}.json")
 
         champ_stats_data = url_champs_stats.json()
-
-        print(f"Champion: {champ_name}")
         
         index = random.randrange(0, 3)
 
-        random_ability = champ_stats_data["data"][champ_name]["spells"][index]["name"]
+        rand_ability = champ_stats_data["data"][rand_name]["spells"][index]["name"]
 
         abilities = ["Q", "W", "E"]
 
-        print(f"\nAbility to max: {abilities[index]} ({random_ability})")
+        #print(f"\nAbility to max: {abilities[index]} ({rand_ability})")
+
+        return rand_name#, rand_ability
 
 
 def get_items():
@@ -46,15 +46,12 @@ def get_items():
                         for boot in data_items["data"][item]["from"]:
                                 if boot == "1001":
                                         all_boots.append(data_items["data"][item]["name"])
+        
+        rand_item = [random.choice(all_boots)]
 
-        rand_item = random.sample(all_items, 5)
+        rand_item.extend(random.sample(all_items, 5))
 
-        print(f"Boots: {random.choice(all_boots)}")
-
-        for x in range(0, 5):
-                suffix = "st" if x == 1 else "nd"
-                print(f"{x+1}{suffix} item: {rand_item[x]}")
-
+        return rand_item
 
 def get_spells():
         all_spells = []
@@ -70,9 +67,7 @@ def get_spells():
 
         rand_spell = random.sample(all_spells, 2)
 
-        for x in range(0, len(rand_spell)):
-                suffix = "st" if x == 1 else "nd"
-                print(f"{x+1}{suffix} spell: {rand_spell[x]}")
+        return rand_spell
                 
 def get_roles():
         # No API for this
@@ -80,7 +75,7 @@ def get_roles():
 
         rand_role = random.choice(all_roles)
 
-        print(f"Role: {rand_role}")
+        return rand_role
 
 def get_runes():
         get_runes = requests.get("https://ddragon.leagueoflegends.com/cdn/16.5.1/data/en_US/runesReforged.json")
@@ -88,7 +83,9 @@ def get_runes():
         data_runes = get_runes.json()
 
         rune_path = random.sample(list(range(0, len(data_runes))), 2)
- 
+        
+        rand_runes = []
+        
         # Used this to understand how to pick things from the list 
         # for x in range(len(data_runes)):
         #         print(data_runes[x]["name"])
@@ -97,17 +94,18 @@ def get_runes():
         #                         print(data_runes[x]["slots"][y]["runes"][z]["name"])
 
         # Primary Rune Path
-        print("Runes 1st part: ")
-        print(data_runes[rune_path[0]]["name"])
+        rand_runes.append(data_runes[rune_path[0]]["name"])
+
         for i in range(0, 4):
-                print(data_runes[rune_path[0]]["slots"][i]["runes"][random.randrange(0,3)]["name"])
+                rand_runes.append(data_runes[rune_path[0]]["slots"][i]["runes"][random.randrange(0,3)]["name"])
 
         # Secondary Rune Path
         minor_runes = random.sample(range(1,4), 2)
-        print("\nRunes 2nd part: ")
-        print(data_runes[rune_path[1]]["name"])
+
+        rand_runes.append(data_runes[rune_path[1]]["name"])
+
         for x in minor_runes:
-                print(data_runes[rune_path[1]]["slots"][x]["runes"][random.randrange(0,3)]["name"])
+                rand_runes.append(data_runes[rune_path[1]]["slots"][x]["runes"][random.randrange(0,3)]["name"])
 
         # Stats Shards
         stat_shards = [
@@ -116,20 +114,21 @@ def get_runes():
                 ["Scaling Health", "Tenacity and Slow Resist", "Health Scaling"]
         ]
 
-        print("\nStats Shards: ")
         for y in range(len(stat_shards)):
-                print(stat_shards[y][random.randrange(0, 3)])
+                rand_runes.append(stat_shards[y][random.randrange(0, 3)])
+
+        return rand_runes
 
 
 
+def gen_build():
+        return {
+                "Champion" : get_name(),
+                "Role" : get_roles(),
+                "Spells" : get_spells(),
+                "Build" : get_items(),
+                "Runes" : get_runes()
+        }
 
-for _ in range(1):
-        get_name()
-        print()
-        get_roles()
-        print()
-        get_spells()
-        print()
-        get_items()
-        print()
-        get_runes()
+if __name__ == "__main__":
+        print(gen_build)
