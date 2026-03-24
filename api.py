@@ -3,6 +3,10 @@ from main import gen_build
 
 app = Flask(__name__)
 
+@app.route("/")
+def main():
+    return "<h1> Main Page <h1/>"
+
 @app.route("/get_data")
 def get_data():
     try:

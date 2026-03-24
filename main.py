@@ -107,7 +107,7 @@ def get_runes():
         for x in minor_runes:
                 rand_runes.append(data_runes[rune_path[1]]["slots"][x]["runes"][random.randrange(0,3)]["name"])
 
-        # Stats Shards
+        # Stats Shards needed to be hardcoded 
         stat_shards = [
                 ["Adaptive Force", "Attack Speed", "Ability Haste"],
                 ["Adaptive Force", "Move Speed", "Health Scaling"],
